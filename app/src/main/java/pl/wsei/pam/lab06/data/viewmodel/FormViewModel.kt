@@ -66,6 +66,6 @@ class FormViewModel(
 
     private fun validate(uiState: TodoTaskForm = todoTaskUiState.todoTask): Boolean {
         return uiState.title.isNotBlank() &&
-                LocalDateConverter.fromMillis(uiState.deadline).isAfter(currentDateProvider.getCurrentDate())
+                !LocalDateConverter.fromMillis(uiState.deadline).isBefore(currentDateProvider.getCurrentDate())
     }
 }

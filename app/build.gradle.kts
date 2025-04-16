@@ -53,7 +53,7 @@ android {
 
 dependencies {
 
-
+    implementation("com.google.accompanist:accompanist-permissions:0.37.2")
     // Core
 
     implementation("androidx.core:core-ktx:1.12.0")

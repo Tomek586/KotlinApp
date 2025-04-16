@@ -16,7 +16,7 @@ fun AppTopBar(
     title: String,
     showBackIcon: Boolean,
     route: String,
-    onSaveClick: () -> Unit = {}
+    onSaveClick: () -> Unit = { }
 ) {
     TopAppBar(
         title = { Text(text = title) },
@@ -36,11 +36,16 @@ fun AppTopBar(
                     Text(text = "Zapisz", fontSize = 18.sp)
                 }
             } else {
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.Settings, contentDescription = "")
+                IconButton(onClick = {
+                    navController.navigate("settings")
+                }) {
+                    Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
                 }
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.Home, contentDescription = "")
+                IconButton(onClick = { /* TODO: akcja Home */ }) {
+                    Icon(imageVector = Icons.Filled.Home, contentDescription = "Home")
+                }
+                Button(onClick = { navController.navigate("testTask") }) {
+                    Text("Test edycji taska")
                 }
             }
         },
