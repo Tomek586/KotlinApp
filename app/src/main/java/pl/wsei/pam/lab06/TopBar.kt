@@ -41,13 +41,16 @@ fun AppTopBar(
                 }) {
                     Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
                 }
-                IconButton(onClick = { /* TODO: akcja Home */ }) {
+                IconButton(onClick = {
+                    navController.navigate("list") {
+                        popUpTo(navController.graph.startDestinationId) { inclusive = true }
+                    }
+                }) {
                     Icon(imageVector = Icons.Filled.Home, contentDescription = "Home")
                 }
-                Button(onClick = { navController.navigate("testTask") }) {
-                    Text("Test edycji taska")
-                }
+
             }
+
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,

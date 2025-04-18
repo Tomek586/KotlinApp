@@ -18,7 +18,6 @@ fun NumericOutlinedTextField(
     OutlinedTextField(
         value = value,
         onValueChange = { newValue ->
-            // Zachowaj tylko znaki cyfr
             onValueChange(newValue.filter { it.isDigit() })
         },
         label = { Text(label) },

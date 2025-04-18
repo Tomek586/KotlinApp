@@ -2,11 +2,13 @@ package pl.wsei.pam.lab06.data.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import pl.wsei.pam.lab06.data.model.TodoTask
 import pl.wsei.pam.lab06.data.repository.TodoTaskRepository
-
-data class ListUiState(val items: List<TodoTask> = listOf())
 
 class ListViewModel(
     private val repository: TodoTaskRepository
@@ -17,11 +19,13 @@ class ListViewModel(
             .map { ListUiState(it) }
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+                started = SharingStarted.WhileSubscribed(5000L),
                 initialValue = ListUiState()
             )
 
-    companion object {
-        private const val TIMEOUT_MILLIS = 5_000L
+    fun markTaskCompleted(task: TodoTask) {
+        viewModelScope.launch {
+            repository.updateItem(task.copy(isDone = true))
+        }
     }
 }

@@ -5,9 +5,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
+import pl.wsei.pam.lab06.data.LocalDateConverter
 import pl.wsei.pam.lab06.data.viewmodel.AppViewModelProvider
 import pl.wsei.pam.lab06.data.viewmodel.FormViewModel
 import pl.wsei.pam.lab06.ui.TodoTaskInputBody
@@ -19,6 +21,7 @@ fun FormScreen(
     viewModel: FormViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -30,6 +33,14 @@ fun FormScreen(
                 onSaveClick = {
                     scope.launch {
                         viewModel.save()
+
+                        val localDate = LocalDateConverter.fromMillis(viewModel.todoTaskUiState.todoTask.deadline)
+
+                        val taskTitle = viewModel.todoTaskUiState.todoTask.title
+
+
+                        (context as? MainActivity)?.scheduleAlarmForTask(localDate, taskTitle)
+
                         navController.navigate("list")
                     }
                 }
@@ -44,3 +55,4 @@ fun FormScreen(
         }
     )
 }
+

@@ -69,7 +69,6 @@ fun SettingsScreen(navController: NavController) {
 
                 Button(
                     onClick = {
-                        // Przekształcamy dane na wartości numeryczne
                         val config = NotificationConfig(
                             daysBefore = daysBefore.toIntOrNull() ?: 1,
                             hoursBefore = hoursBefore.toIntOrNull() ?: 0,

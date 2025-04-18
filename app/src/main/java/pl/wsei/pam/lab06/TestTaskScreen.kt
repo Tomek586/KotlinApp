@@ -36,7 +36,6 @@ fun TestTaskScreen(navController: NavController) {
     ) {
         Text(text = "Edytuj zadanie", style = MaterialTheme.typography.headlineMedium)
 
-        // Pole tekstowe na tytuł zadania
         OutlinedTextField(
             value = taskTitle,
             onValueChange = { taskTitle = it },
@@ -44,12 +43,10 @@ fun TestTaskScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Przycisk wyboru daty
         Button(onClick = { showDatePicker = true }) {
             Text(text = "Wybierz datę: $selectedDate")
         }
 
-        // Przycisk wyboru godziny
         Button(onClick = { showTimePicker = true }) {
             Text(text = "Wybierz godzinę: $selectedTime")
         }
@@ -64,7 +61,6 @@ fun TestTaskScreen(navController: NavController) {
         }
     }
 
-    // Dialog wyboru daty
     if (showDatePicker) {
         DatePickerDialog(
             context,
@@ -78,7 +74,6 @@ fun TestTaskScreen(navController: NavController) {
         ).show()
     }
 
-    // Dialog wyboru czasu
     if (showTimePicker) {
         TimePickerDialog(
             context,

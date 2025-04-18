@@ -5,12 +5,9 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 
-/**
- * Funkcja przeliczająca datę (LocalDate) na timestamp w milisekundach,
- * zakładając domyślny czas (np. 08:00).
- */
+
 fun calculateAlarmTime(deadlineDate: LocalDate, defaultHour: Int = 8, defaultMinute: Int = 0): Long {
-    val defaultTime = LocalTime.of(defaultHour, defaultMinute) // domyślnie: 08:00
+    val defaultTime = LocalTime.of(defaultHour, defaultMinute) // np. 08:00
     val deadlineDateTime = LocalDateTime.of(deadlineDate, defaultTime)
     return deadlineDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }

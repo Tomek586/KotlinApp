@@ -14,6 +14,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import pl.wsei.pam.lab06.data.TodoApplication
 import pl.wsei.pam.lab06.ui.theme.Lab06Theme
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
 
 // Stałe używane w powiadomieniach i alarmach
 const val notificationID = 121
@@ -42,12 +46,36 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // Nowa metoda scheduleAlarm przyjmująca dodatkowy parametr taskTitle
-    fun scheduleAlarm(time: Long, taskTitle: String) {
+    fun calculateAlarmTime(deadlineDate: LocalDate, defaultHour: Int = 8, defaultMinute: Int = 0): Long {
+        val defaultTime = LocalTime.of(defaultHour, defaultMinute) // domyślnie 08:00
+        val deadlineDateTime = LocalDateTime.of(deadlineDate, defaultTime)
+        return deadlineDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    }
+
+    fun scheduleAlarmForTask(taskDeadline: LocalDate, taskTitle: String) {
+        val today = LocalDate.now()
+
+        val isTomorrow = taskDeadline == today.plusDays(1)
+
+        val alarmTimeMillis = if (isTomorrow) {
+            System.currentTimeMillis() + 10_000
+        } else {
+            calculateAlarmTime(taskDeadline)
+        }
+
+
+        scheduleAlarm(alarmTimeMillis, taskTitle, isTomorrow)
+    }
+
+    fun scheduleAlarm(time: Long, taskTitle: String, isTomorrow: Boolean = false) {
         val intent = Intent(applicationContext, NotificationBroadcastReceiver::class.java).apply {
-            // Wysyłamy jako extras tytuł zadania oraz komunikat
-            putExtra(titleExtra, "Termin zadania: $taskTitle")
-            putExtra(messageExtra, "Zbliża się termin wykonania zadania: $taskTitle")
+            putExtra(titleExtra, taskTitle)
+            putExtra("deadlineTomorrow", isTomorrow)
+            if (isTomorrow) {
+                putExtra(messageExtra, "Deadline zadania \"$taskTitle\" jest jutro")
+            } else {
+                putExtra(messageExtra, "Zbliża się termin wykonania zadania: $taskTitle")
+            }
         }
 
         val pendingIntent = PendingIntent.getBroadcast(
@@ -63,17 +91,18 @@ class MainActivity : ComponentActivity() {
             time,
             pendingIntent
         )
-        Log.d("MainActivity", "Alarm ustawiony na: $time dla zadania: $taskTitle")
+        Log.d("MainActivity", "Alarm ustawiony na: $time dla zadania: $taskTitle, isTomorrow: $isTomorrow")
     }
+
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         createNotificationChannel()
-        // Inicjalizacja kontenera DI
+
         container = (this.application as TodoApplication).container
 
-        // Testowy alarm: po 2 sekundach od uruchomienia ustawiamy alarm dla przykładowego zadania "Test Task"
+        // Testowy alarm
         scheduleAlarm(System.currentTimeMillis() + 2000, "Test Task")
 
         setContent {

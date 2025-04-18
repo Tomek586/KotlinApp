@@ -1,6 +1,7 @@
 package pl.wsei.pam.lab06.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -19,7 +20,11 @@ import pl.wsei.pam.lab06.data.model.TodoTask
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun ListItem(item: TodoTask, modifier: Modifier = Modifier) {
+fun ListItem(
+    item: TodoTask,
+    onTaskCompleted: (TodoTask) -> Unit,
+    modifier: Modifier = Modifier
+) {
     ElevatedCard(
         modifier = modifier
             .fillMaxWidth()
@@ -27,7 +32,7 @@ fun ListItem(item: TodoTask, modifier: Modifier = Modifier) {
             .padding(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.elevatedCardColors(
-            containerColor = Color(0xF5F4F6FF) // jasne tło karty
+            containerColor = Color(0xF5F4F6FF)
         )
     ) {
         Column(
@@ -68,12 +73,18 @@ fun ListItem(item: TodoTask, modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
+
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(if (item.isDone) Color(0xFF4CAF50) else Color(0xFFD32F2F)),
+                    .background(if (item.isDone) Color(0xFF4CAF50) else Color(0xFFD32F2F))
+                    .then(
+                        if (!item.isDone)
+                            Modifier.clickable { onTaskCompleted(item) }
+                        else Modifier
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
